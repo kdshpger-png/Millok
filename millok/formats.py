@@ -1,5 +1,5 @@
-"""Turn mined Pairs into the two dataset formats most fine-tuning tools
-already accept, so Millok's output can go straight into an existing
+"""Turn mined pairs and confirmations into dataset formats most fine-tuning
+tools already accept, so Millok's output can go straight into an existing
 trainer (Hugging Face TRL, unsloth, axolotl, ...) without a conversion step.
 """
 from __future__ import annotations

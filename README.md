@@ -139,7 +139,7 @@ LoRA-style fine-tuning on the resulting dataset is feasible on a single consumer
 python3 tests/test_mining.py -v
 ```
 
-25 checks, no test framework dependency, plain asserts — covering session isolation (a fix in one conversation must never "fix" another), window expiry, many-failures-to-one-success, recurrence weighting, threshold sensitivity, and that confirmations never get confused with regular pairs.
+26 checks, no test framework dependency, plain asserts — covering session isolation (a fix in one conversation must never "fix" another), window expiry, many-failures-to-one-success, recurrence weighting, threshold sensitivity, and that confirmations never get confused with regular pairs.
 
 ## Design notes
 

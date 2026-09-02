@@ -142,6 +142,21 @@ def test_gap_requires_never_being_resolved_in_session():
           extract_gaps(turns) == [])
 
 
+def test_earlier_success_does_not_retroactively_resolve_a_later_failure():
+    # An earlier version of extract_gaps checked the whole session
+    # regardless of order - a success that happened BEFORE a later,
+    # similarly-worded failure wrongly counted as having "fixed" it.
+    # Nothing that already happened can resolve something that hasn't gone
+    # wrong yet; only a LATER success should count.
+    turns = [
+        Turn("s1", "open the budget file", "open_file(x)", True, ""),
+        Turn("s1", "open the budget file", "open_flie(x)", False, "unknown tool"),
+    ]
+    gaps = extract_gaps(turns)
+    check("an earlier, coincidental success doesn't erase a later failure",
+          len(gaps) == 1, gaps)
+
+
 def test_threshold_controls_how_loosely_intents_are_matched():
     # ratio(a, b) ~= 0.83 - deliberately measured with difflib beforehand,
     # not guessed, so this test asserts a real number instead of a hope.

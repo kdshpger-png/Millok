@@ -3,10 +3,9 @@ from __future__ import annotations
 
 import argparse
 import sys
-from pathlib import Path
 
 from . import formats, mining
-from .types import read_turns, write_turns
+from .types import read_turns
 
 
 def _cmd_mine(args: argparse.Namespace) -> int:
@@ -66,21 +65,27 @@ def _cmd_demo(args: argparse.Namespace) -> int:
     print(f"confirmed-uncertain: {len(confirmed)}")
     print(f"unresolved gaps    : {len(gaps)}")
     print()
-    print("sample pair:")
-    p = max(pairs, key=lambda p: p.weight)
-    print(f"  intent   : {p.intent}")
-    print(f"  rejected : {p.rejected}")
-    print(f"  reason   : {p.reason}")
-    print(f"  chosen   : {p.chosen}")
-    print(f"  weight   : {p.weight}  (this exact failure reason recurred "
-          f"{p.weight} times)")
-    print()
-    print("sample confirmation (succeeded, but the agent had hedged):")
-    c = confirmed[0]
-    print(f"  intent   : {c.intent}")
-    print(f"  attempt  : {c.attempt}")
-    print(f"  reason   : {c.reason}")
-    print()
+    # The demo data is fixed and tested, so pairs/confirmed are never
+    # actually empty here - but guarding it costs one line and avoids a
+    # raw ValueError/IndexError if someone edits demo_data.py and removes
+    # every failure pattern without noticing these depend on it.
+    if pairs:
+        print("sample pair:")
+        p = max(pairs, key=lambda p: p.weight)
+        print(f"  intent   : {p.intent}")
+        print(f"  rejected : {p.rejected}")
+        print(f"  reason   : {p.reason}")
+        print(f"  chosen   : {p.chosen}")
+        print(f"  weight   : {p.weight}  (this exact failure reason recurred "
+              f"{p.weight} times)")
+        print()
+    if confirmed:
+        print("sample confirmation (succeeded, but the agent had hedged):")
+        c = confirmed[0]
+        print(f"  intent   : {c.intent}")
+        print(f"  attempt  : {c.attempt}")
+        print(f"  reason   : {c.reason}")
+        print()
     print("gap:")
     for g in gaps:
         print(f"  intent   : {g.intent}")

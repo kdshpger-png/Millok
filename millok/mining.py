@@ -132,14 +132,23 @@ def extract_gaps(turns: list[Turn], threshold: float = DEFAULT_THRESHOLD) -> lis
     it should be — this list has value even if nobody ever fine-tunes
     anything. It is the shortest path to "what does this agent still not
     understand".
+
+    "Session-wide" still means forward-looking only, though: only successes
+    that happen AFTER a given failure count as resolving it. An earlier
+    version of this function checked the whole session regardless of order,
+    which meant an unrelated success that happened to occur BEFORE a later,
+    similarly-worded failure could retroactively mark that failure as
+    resolved — backwards, since nothing that already happened can fix
+    something that hasn't gone wrong yet. extract_pairs already only ever
+    looks forward from a failure; this brings extract_gaps in line with it.
     """
     gaps: list[Gap] = []
     for session_turns in _by_session(turns).values():
-        resolved = [t.intent for t in session_turns if t.success]
-        for t in session_turns:
+        for i, t in enumerate(session_turns):
             if t.success:
                 continue
-            if any(_similar(t.intent, r, threshold) for r in resolved):
+            later_successes = (s.intent for s in session_turns[i + 1:] if s.success)
+            if any(_similar(t.intent, r, threshold) for r in later_successes):
                 continue
             gaps.append(Gap(session=t.session, intent=t.intent,
                             attempt=t.attempt, reason=t.reason))
