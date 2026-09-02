@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "millok"
+version = "0.1.0"
+description = "Mine fine-tuning pairs from an agent's own retry-and-correct logs. No embeddings, no external model, zero dependencies."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+millok = "millok.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["millok*"]
